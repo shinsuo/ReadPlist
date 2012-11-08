@@ -18,6 +18,8 @@
 		54E49C0E164BF5E5003A5ED4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 54E49C0C164BF5E5003A5ED4 /* InfoPlist.strings */; };
 		54E49C11164BF5E5003A5ED4 /* ReadPlistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 54E49C10164BF5E5003A5ED4 /* ReadPlistTests.m */; };
 		54E49C1C164BF77D003A5ED4 /* ParseDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 54E49C1B164BF77D003A5ED4 /* ParseDict.m */; };
+		54E49C23164BFF98003A5ED4 /* girl.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54E49C21164BFF98003A5ED4 /* girl.plist */; };
+		54E49C24164BFF98003A5ED4 /* girl.png in Resources */ = {isa = PBXBuildFile; fileRef = 54E49C22164BFF98003A5ED4 /* girl.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,8 @@
 		54E49C10164BF5E5003A5ED4 /* ReadPlistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReadPlistTests.m; sourceTree = "<group>"; };
 		54E49C1A164BF77D003A5ED4 /* ParseDict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseDict.h; sourceTree = "<group>"; };
 		54E49C1B164BF77D003A5ED4 /* ParseDict.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseDict.m; sourceTree = "<group>"; };
+		54E49C21164BFF98003A5ED4 /* girl.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = girl.plist; sourceTree = "<group>"; };
+		54E49C22164BFF98003A5ED4 /* girl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = girl.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +126,8 @@
 				54E49BFB164BF5E4003A5ED4 /* MainMenu.xib */,
 				54E49C1A164BF77D003A5ED4 /* ParseDict.h */,
 				54E49C1B164BF77D003A5ED4 /* ParseDict.m */,
+				54E49C21164BFF98003A5ED4 /* girl.plist */,
+				54E49C22164BFF98003A5ED4 /* girl.png */,
 				54E49BED164BF5E4003A5ED4 /* Supporting Files */,
 			);
 			path = ReadPlist;
@@ -232,6 +238,8 @@
 				54E49BF1164BF5E4003A5ED4 /* InfoPlist.strings in Resources */,
 				54E49BF7164BF5E4003A5ED4 /* Credits.rtf in Resources */,
 				54E49BFD164BF5E4003A5ED4 /* MainMenu.xib in Resources */,
+				54E49C23164BFF98003A5ED4 /* girl.plist in Resources */,
+				54E49C24164BFF98003A5ED4 /* girl.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
