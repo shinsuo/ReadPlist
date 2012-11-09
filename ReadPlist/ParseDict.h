@@ -8,14 +8,19 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ParseDict : NSWindow <NSOpenSavePanelDelegate>
+@interface ParseDict : NSWindow <NSOpenSavePanelDelegate,NSTableViewDataSource,NSTableViewDelegate>
 {
-    NSMutableArray *_frameArray;
+    NSURL *_fileURL;
+    NSArray *_frameArray;
     NSMutableDictionary *_animationArray;
 }
 
 - (IBAction)loadPlist:(id)sender;
 - (IBAction)savePlist:(id)sender;
 - (IBAction)saveJson:(id)sender;
+- (IBAction)newAnimation:(id)sender;
+
+@property (strong) IBOutlet NSTableView *leftTable;
+@property (strong) IBOutlet NSOutlineView *rightTable;
 
 @end

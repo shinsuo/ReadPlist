@@ -9,6 +9,8 @@
 #import "ParseDict.h"
 
 @implementation ParseDict
+@synthesize leftTable = _leftTable;
+@synthesize rightTable = _rightTable;
 
 - (IBAction)loadPlist:(id)sender {
     NSLog(@"loading Plist");
@@ -23,6 +25,22 @@
     [openPanel beginSheetModalForWindow:self completionHandler:^(NSInteger result){
         
     }];
+    
+    if (openPanel.runModal == NSOKButton) {
+        _fileURL = openPanel.URL;
+        NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithContentsOfURL:openPanel.URL];
+        NSMutableDictionary *tempDict2 = [tempDict objectForKey:@"frames"];
+
+        NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
+        _frameArray = [[tempDict2 allKeys] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:sd, nil]];
+        
+        [_leftTable reloadData];
+        [_leftTable setAllowsMultipleSelection:YES];
+        [_leftTable setDraggingDestinationFeedbackStyle:NSTableViewDraggingDestinationFeedbackStyleRegular];
+        
+    }else{
+        NSLog(@"Cancel");
+    }
 }
 
 - (IBAction)savePlist:(id)sender {
@@ -32,7 +50,34 @@
     
 }
 
+- (IBAction)newAnimation:(id)sender {
+    
+}
+
 #pragma mark NSOpenSavePanelDelegate Method
+
+#pragma mark NSTableViewDataSource Method
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return [_frameArray count];
+}
+
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    
+    return [_frameArray objectAtIndex:row];
+}
+
+#pragma mark NSTableViewDelegate Method
+
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
+{
+    NSIndexSet *indexSet = [_leftTable selectedRowIndexes];
+    
+    NSLog(@"indexSet:%@",indexSet);
+    
+}
 
 
 @end
