@@ -394,6 +394,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ReadPlist/ReadPlist-Prefix.pch";
 				INFOPLIST_FILE = "ReadPlist/ReadPlist-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -406,6 +407,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ReadPlist/ReadPlist-Prefix.pch";
 				INFOPLIST_FILE = "ReadPlist/ReadPlist-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -460,6 +462,7 @@
 				54E49C16164BF5E5003A5ED4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		54E49C17164BF5E5003A5ED4 /* Build configuration list for PBXNativeTarget "ReadPlistTests" */ = {
 			isa = XCConfigurationList;
@@ -468,6 +471,7 @@
 				54E49C19164BF5E5003A5ED4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
