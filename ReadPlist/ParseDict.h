@@ -8,11 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ParseDict : NSWindow <NSOpenSavePanelDelegate,NSTableViewDataSource,NSTableViewDelegate>
+@interface ParseDict : NSWindow <NSOpenSavePanelDelegate,
+                                    NSTableViewDataSource,
+                                    NSTableViewDelegate,
+                                    NSOutlineViewDataSource,
+                                    NSOutlineViewDelegate>
 {
     NSURL *_fileURL;
     NSArray *_frameArray;
-    NSMutableDictionary *_animationArray;
+    NSMutableDictionary *_animationDict;
+    NSArray *_currentAnimationArray;
 }
 
 - (IBAction)loadPlist:(id)sender;

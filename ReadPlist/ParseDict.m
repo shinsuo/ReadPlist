@@ -36,7 +36,6 @@
         
         [_leftTable reloadData];
         [_leftTable setAllowsMultipleSelection:YES];
-        [_leftTable setDraggingDestinationFeedbackStyle:NSTableViewDraggingDestinationFeedbackStyleRegular];
         
     }else{
         NSLog(@"Cancel");
@@ -51,7 +50,29 @@
 }
 
 - (IBAction)newAnimation:(id)sender {
+    NSIndexSet *indexSet = [_leftTable selectedRowIndexes];
     
+    NSArray *newAnimationArray = [_frameArray objectsAtIndexes:indexSet];
+    NSLog(@"newAnimation:{%@}",newAnimationArray);
+    
+    _currentAnimationArray = [_frameArray objectsAtIndexes:indexSet];
+    
+//    [_leftTable beginUpdates];
+//    [_leftTable removeRowsAtIndexes:indexSet withAnimation:NSTableViewAnimationEffectFade];
+//    [_leftTable insertRowsAtIndexes:indexSet withAnimation:NSTableViewAnimationEffectFade];
+//    [_leftTable endUpdates];
+    
+    if (!_animationDict) {
+        _animationDict = [[NSMutableDictionary alloc] initWithCapacity:1];
+    }
+    
+    
+    
+    [_animationDict setObject:_currentAnimationArray forKey:[NSString stringWithFormat:@"animation%li",[_animationDict count]]];
+    
+    NSLog(@"_animationDict:{%@}",_animationDict);
+    
+    [_rightTable reloadData];
 }
 
 #pragma mark NSOpenSavePanelDelegate Method
@@ -73,11 +94,28 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification
 {
-    NSIndexSet *indexSet = [_leftTable selectedRowIndexes];
     
-    NSLog(@"indexSet:%@",indexSet);
     
 }
+
+#pragma mark NSOutlineViewDataSource Method
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+{
+    return [_currentAnimationArray count];
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+{
+    return [_currentAnimationArray objectAtIndex:index];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
+{
+    return YES;
+}
+
+
+#pragma mark NSOutlineViewDelegate Method
 
 
 @end
