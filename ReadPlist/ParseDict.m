@@ -32,7 +32,7 @@
         NSMutableDictionary *tempDict2 = [tempDict objectForKey:@"frames"];
 
         NSSortDescriptor *sd = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:YES];
-        _frameArray = [[tempDict2 allKeys] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:sd, nil]];
+        _frameArray = [[[tempDict2 allKeys] sortedArrayUsingDescriptors:[NSArray arrayWithObjects:sd, nil]] mutableCopy];
         
         [_leftTable reloadData];
         [_leftTable setAllowsMultipleSelection:YES];
@@ -51,29 +51,106 @@
 
 - (IBAction)newAnimation:(id)sender {
     NSIndexSet *indexSet = [_leftTable selectedRowIndexes];
-    
-    NSArray *newAnimationArray = [_frameArray objectsAtIndexes:indexSet];
-    NSLog(@"newAnimation:{%@}",newAnimationArray);
-    
-    _currentAnimationArray = [_frameArray objectsAtIndexes:indexSet];
+
+    _currentAnimationArray = [[_frameArray objectsAtIndexes:indexSet] mutableCopy];
     
 //    [_leftTable beginUpdates];
 //    [_leftTable removeRowsAtIndexes:indexSet withAnimation:NSTableViewAnimationEffectFade];
 //    [_leftTable insertRowsAtIndexes:indexSet withAnimation:NSTableViewAnimationEffectFade];
 //    [_leftTable endUpdates];
     
-    if (!_animationDict) {
-        _animationDict = [[NSMutableDictionary alloc] initWithCapacity:1];
+//    if (!_animationDict) {
+//        _animationDict = [[NSMutableDictionary alloc] initWithCapacity:1];
+//    }
+//    
+//    
+//    
+//    [_animationDict setObject:_currentAnimationArray forKey:[NSString stringWithFormat:@"animation%li",[_animationDict count]]];
+    
+    NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                     [NSString stringWithFormat:@"animation%li",[_animationList count]],@"parent",
+                                     _currentAnimationArray,@"children",
+                                     nil];
+    
+    if (!_animationList) {
+        _animationList = [[NSMutableArray alloc] initWithCapacity:1] ;
+    }
+    
+    [_animationList addObject:tempDict];
+    
+    
+    
+//    [_rightTable reloadData];
+    [_rightTable reloadItem:_animationList];
+    [_rightTable reloadData];
+}
+
+- (void)deleteParent:(id)item
+{
+    if ([_animationList containsObject:item]) {
+        
+        NSUInteger index = [_animationList indexOfObject:item];
+        [_animationList removeObject:item];
+        
+        for (; index < [_animationList count]; index++) {
+            NSMutableDictionary *temp = [_animationList objectAtIndex:index];
+            [temp setObject:[NSString stringWithFormat:@"animation%li",index] forKey:@"parent"];
+        }
+        
+    }
+}
+
+- (IBAction)removeItem:(id)sender {
+
+    id item = [_rightTable itemAtRow:_rightTable.selectedRow];
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        NSLog(@"NSDictionary:{%@}",item);
+        
+//        NSDictionary *temp = [_rightTable parentForItem:[_rightTable itemAtRow:_rightTable.selectedRow]];
+//        if ([_animationList containsObject:temp]) {
+//            NSLog(@"fdsf{%@}",[_rightTable itemAtRow:_rightTable.selectedRow]);
+//        }else{
+//            NSLog(@"abc{%@}",[_rightTable itemAtRow:_rightTable.selectedRow]);
+//        }
+        [self deleteParent:item];
+    }else if ([item isKindOfClass:[NSString class]]){
+        NSMutableDictionary *tempDict = nil;
+        NSMutableArray *tempArray = nil;
+        for (tempDict in _animationList) {
+            tempArray = [tempDict objectForKey:@"children"];
+            if ([tempArray containsObject:item]) {
+                [tempArray removeObject:item];
+            }
+        }
+        
+        if ([tempArray count] < 1) {
+            NSMutableDictionary *temp = [_rightTable parentForItem:item];
+            [self deleteParent:temp];
+        }
     }
     
     
-    
-    [_animationDict setObject:_currentAnimationArray forKey:[NSString stringWithFormat:@"animation%li",[_animationDict count]]];
-    
-    NSLog(@"_animationDict:{%@}",_animationDict);
-    
     [_rightTable reloadData];
+    
 }
+
+- (void)deleteItemFromList:(NSUInteger)index
+{
+    NSUInteger currentCount = 0;
+    for(id item in _animationList)
+    {
+        currentCount += [[item objectForKey:@"children"] count] + 1;
+        if (index > currentCount)
+        {
+            continue;
+        }else{
+            
+        }
+            
+        
+    }
+}
+
 
 #pragma mark NSOpenSavePanelDelegate Method
 
@@ -101,17 +178,76 @@
 #pragma mark NSOutlineViewDataSource Method
 - (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
 {
-    return [_currentAnimationArray count];
+    if (item == nil) {
+        return [_animationList count];
+    }
+    
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        return [[item objectForKey:@"children"] count];
+    }
+    
+    return 0;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
 {
-    return [_currentAnimationArray objectAtIndex:index];
+    if (item == nil) {
+        return [_animationList objectAtIndex:index];
+    }
+    
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        return [[item objectForKey:@"children"] objectAtIndex:index];
+    }
+    
+    return nil;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item
 {
-    return YES;
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
+{   
+    
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        return [item objectForKey:@"parent"];
+    }
+    
+    
+    return item;
+    
+    
+//    return [item objectForKey:@"children"];
+    
+//    if ([outlineView isItemExpanded:item]) {
+//        return [item objectForKey:@"parent"];
+//    }else{
+//        return @"fds";
+//    }
+}
+
+//- (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item
+//{
+//    NSLog(@"shouldSelectItem");
+//}
+
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification
+{
+    
+    
+    if ([_rightTable isExpandable:[_rightTable itemAtRow:_rightTable.selectedRow]]) {
+//        NSLog(@"parent:%li",_rightTable.selectedRow);
+    }else{
+//        NSLog(@"children:%li",_rightTable.selectedRow);
+    };
+    
+    
+
 }
 
 

@@ -15,15 +15,16 @@
                                     NSOutlineViewDelegate>
 {
     NSURL *_fileURL;
-    NSArray *_frameArray;
-    NSMutableDictionary *_animationDict;
-    NSArray *_currentAnimationArray;
+    NSMutableArray *_frameArray;
+    NSMutableArray *_animationList;
+    NSMutableArray *_currentAnimationArray;
 }
 
 - (IBAction)loadPlist:(id)sender;
 - (IBAction)savePlist:(id)sender;
 - (IBAction)saveJson:(id)sender;
 - (IBAction)newAnimation:(id)sender;
+- (IBAction)removeItem:(id)sender;
 
 @property (strong) IBOutlet NSTableView *leftTable;
 @property (strong) IBOutlet NSOutlineView *rightTable;
