@@ -18,6 +18,7 @@
     NSMutableArray *_frameArray;
     NSMutableArray *_animationList;
     NSMutableArray *_currentAnimationArray;
+    NSMutableDictionary *_saveDict;
 }
 
 - (IBAction)loadPlist:(id)sender;

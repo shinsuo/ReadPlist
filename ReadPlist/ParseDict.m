@@ -8,6 +8,16 @@
 
 #import "ParseDict.h"
 
+#define CHILD       @"children"
+#define PARENT      @"parent"
+#define ANIMATION   @"animation"
+#define NAME        @"name"
+#define COUNT       @"count"
+
+#define ANIMATIONPLIST  @"-ani.plist"
+#define ANIMATIONJSON   @"-ani.json"
+
+
 @implementation ParseDict
 @synthesize leftTable = _leftTable;
 @synthesize rightTable = _rightTable;
@@ -28,6 +38,7 @@
     
     if (openPanel.runModal == NSOKButton) {
         _fileURL = openPanel.URL;
+        
         NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithContentsOfURL:openPanel.URL];
         NSMutableDictionary *tempDict2 = [tempDict objectForKey:@"frames"];
 
@@ -43,6 +54,29 @@
 }
 
 - (IBAction)savePlist:(id)sender {
+    if (!_saveDict) {
+        _saveDict = [[NSMutableDictionary alloc] initWithCapacity:1];
+    }
+    
+    for (id tempDict in _animationList) {
+        NSMutableArray *tempArray = [tempDict objectForKey:CHILD];
+        NSString *tempString = [tempArray objectAtIndex:0];
+        NSDictionary *animationName = [NSDictionary dictionaryWithObject:[tempString substringToIndex:tempString.length-5]
+                                                                  forKey:NAME];
+        NSDictionary *animationCount = [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%lu",[tempArray count]]
+                                                                   forKey:COUNT];
+        
+        NSDictionary *animationObject = [NSDictionary dictionaryWithObjectsAndKeys:[tempString substringToIndex:tempString.length-5],
+                                         NAME,
+                                         [NSString stringWithFormat:@"%lu",[tempArray count]],
+                                         COUNT, nil];
+        
+        [_saveDict setObject:animationObject
+                      forKey:[tempDict objectForKey:PARENT]];
+    }
+    NSURL *newFileURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",[_fileURL.absoluteString substringToIndex:_fileURL.absoluteString.length-6],ANIMATIONPLIST]];
+    NSLog(@"newFileURL",newFileURL);
+    [_saveDict writeToURL:newFileURL atomically:YES];
 }
 
 - (IBAction)saveJson:(id)sender {
@@ -68,8 +102,8 @@
 //    [_animationDict setObject:_currentAnimationArray forKey:[NSString stringWithFormat:@"animation%li",[_animationDict count]]];
     
     NSMutableDictionary *tempDict = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                     [NSString stringWithFormat:@"animation%li",[_animationList count]],@"parent",
-                                     _currentAnimationArray,@"children",
+                                     [NSString stringWithFormat:@"%@%li",ANIMATION,[_animationList count]],PARENT,
+                                     _currentAnimationArray,CHILD,
                                      nil];
     
     if (!_animationList) {
@@ -92,10 +126,12 @@
         NSUInteger index = [_animationList indexOfObject:item];
         [_animationList removeObject:item];
         
+        /*更改animation序列的名字
         for (; index < [_animationList count]; index++) {
             NSMutableDictionary *temp = [_animationList objectAtIndex:index];
-            [temp setObject:[NSString stringWithFormat:@"animation%li",index] forKey:@"parent"];
+            [temp setObject:[NSString stringWithFormat:@"%@%li",ANIMATION,index] forKey:PARENT];
         }
+        // */
         
     }
 }
@@ -104,20 +140,13 @@
 
     id item = [_rightTable itemAtRow:_rightTable.selectedRow];
     if ([item isKindOfClass:[NSDictionary class]]) {
-        NSLog(@"NSDictionary:{%@}",item);
         
-//        NSDictionary *temp = [_rightTable parentForItem:[_rightTable itemAtRow:_rightTable.selectedRow]];
-//        if ([_animationList containsObject:temp]) {
-//            NSLog(@"fdsf{%@}",[_rightTable itemAtRow:_rightTable.selectedRow]);
-//        }else{
-//            NSLog(@"abc{%@}",[_rightTable itemAtRow:_rightTable.selectedRow]);
-//        }
         [self deleteParent:item];
     }else if ([item isKindOfClass:[NSString class]]){
         NSMutableDictionary *tempDict = nil;
         NSMutableArray *tempArray = nil;
         for (tempDict in _animationList) {
-            tempArray = [tempDict objectForKey:@"children"];
+            tempArray = [tempDict objectForKey:CHILD];
             if ([tempArray containsObject:item]) {
                 [tempArray removeObject:item];
             }
@@ -139,7 +168,7 @@
     NSUInteger currentCount = 0;
     for(id item in _animationList)
     {
-        currentCount += [[item objectForKey:@"children"] count] + 1;
+        currentCount += [[item objectForKey:CHILD] count] + 1;
         if (index > currentCount)
         {
             continue;
@@ -183,7 +212,7 @@
     }
     
     if ([item isKindOfClass:[NSDictionary class]]) {
-        return [[item objectForKey:@"children"] count];
+        return [[item objectForKey:CHILD] count];
     }
     
     return 0;
@@ -196,7 +225,7 @@
     }
     
     if ([item isKindOfClass:[NSDictionary class]]) {
-        return [[item objectForKey:@"children"] objectAtIndex:index];
+        return [[item objectForKey:CHILD] objectAtIndex:index];
     }
     
     return nil;
@@ -215,7 +244,7 @@
 {   
     
     if ([item isKindOfClass:[NSDictionary class]]) {
-        return [item objectForKey:@"parent"];
+        return [item objectForKey:PARENT];
     }
     
     
