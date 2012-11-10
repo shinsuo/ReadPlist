@@ -8,12 +8,19 @@
 
 #import "ParseDict.h"
 
+
 #define CHILD       @"children"
 #define PARENT      @"parent"
 #define ANIMATION   @"animation"
 #define NAME        @"name"
 #define COUNT       @"count"
 
+//AnimationFile Formate
+/*
+    Example:
+        Load    girl.plist
+        Generat girl-ani.plist/girl-ani.json
+ */
 #define ANIMATIONPLIST  @"-ani.plist"
 #define ANIMATIONJSON   @"-ani.json"
 
@@ -75,7 +82,6 @@
                       forKey:[tempDict objectForKey:PARENT]];
     }
     NSURL *newFileURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",[_fileURL.absoluteString substringToIndex:_fileURL.absoluteString.length-6],ANIMATIONPLIST]];
-    NSLog(@"newFileURL",newFileURL);
     [_saveDict writeToURL:newFileURL atomically:YES];
 }
 
